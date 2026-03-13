@@ -167,21 +167,48 @@ function getDailyMotivation(){
   return lines[Math.floor(Math.random()*lines.length)];
 }
 
-// YouTube Suggestion using API Key
-async function getYoutubeVideo(query){
-  const apiKey = "AIzaSyD3_pVIFtixs4fL72n0QNpSSu-x-Q1ce9o";
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(query)}&key=${apiKey}&maxResults=1`;
-  try{
-    const response = await fetch(url);
-    const data = await response.json();
-    if(data.items && data.items.length>0){
-      return `https://www.youtube.com/embed/${data.items[0].id.videoId}`;
+
+  // Suggest helpful video based on user situation or question
+async function getHelpfulVideo(userMessage) {
+  const msg = userMessage.toLowerCase();
+
+  // Emotional distress → motivation or coping
+  const emotionalKeywords = ["sad", "lonely", "pain", "stress", "unhappy", "angry", "worried", "upset"];
+  for (const word of emotionalKeywords) {
+    if (msg.includes(word)) {
+      return "https://www.youtube.com/embed/Zi9To3zE9U8"; // Coping with sadness/motivation video
     }
-  }catch(e){}
+  }
+
+  // Feeling lazy → productivity / energy
+  const lazyKeywords = ["lazy", "tired", "unmotivated", "sleepy", "bored"];
+  for (const word of lazyKeywords) {
+    if (msg.includes(word)) {
+      return "https://www.youtube.com/embed/3V4jsE0Ck8g"; // How to be active / increase energy
+    }
+  }
+
+  // Study / confusion → educational / topic explanation
+  const studyKeywords = ["study", "exam", "nursing", "homework", "assignment", "anatomy", "medical", "confused"];
+  for (const word of studyKeywords) {
+    if (msg.includes(word)) {
+      return "https://www.youtube.com/embed/FnC2o0qU2hA"; // Educational/learning video
+    }
+  }
+
+  // Motivation / focus → general motivational videos
+  const motivateKeywords = ["dream", "goal", "future", "motivation", "success", "discipline"];
+  for (const word of motivateKeywords) {
+    if (msg.includes(word)) {
+      return "https://www.youtube.com/embed/IlU-zDU6aQ0"; // Motivational video
+    }
+  }
+
+  // Default fallback → general life guidance
   return "https://www.youtube.com/embed/mgmVOuLgFB0";
 }
-
-// SOMIKA AI Brain
+  
+  // SOMIKA AI Brain
 const SOMIKA_BRAIN = `You are Somika AI, a personal life mentor, study assistant, and supportive guide for Somika Bhandari.
 
 Your purpose is to guide, support, motivate, and assist Somika in her daily life, studies, and personal challenges. You must always respond with kindness, clarity, and wisdom like a mentor who genuinely wants her to succeed.
