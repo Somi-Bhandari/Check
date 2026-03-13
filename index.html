@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Somika's Success Map | Personal Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -21,7 +21,7 @@ body{
   align-items:center;
   color:#f8fafc;
   overflow-y:auto;
-  background:linear-gradient(rgba(15,23,42,0.8), rgba(15,23,42,0.9)), url('https://images.unsplash.com/photo-1581595219315-a187dd40c322?auto=format&fit=crop&w=3024&q=80');
+  background:linear-gradient(rgba(15,23,42,0.8), rgba(15,23,42,0.9)), url('720777-free-download-pretty-nursing-background-page-1-line17qqcom-3024x3024-for-your-desktop-mobile-tablet-explore-nursing-wallpaper.jpg');
   background-size:cover;
   background-position:center;
 }
@@ -124,13 +124,13 @@ body{
 </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="mainContainer">
   <div class="header">
     <h1>🩺 SOMIKA'S SUCCESS MAP</h1>
     <p>I AM ALWAYS HERE FOR YOU SOMI</p>
   </div>
   <div class="chat-box" id="chatContainer">
-    <div class="msg ai-bubble">How May I help you Somika, I Am Ready Guide You.</div>
+    <div class="msg ai-bubble">How may I help you, Somika? I am ready to guide you.</div>
   </div>
   <div class="input-area">
     <input type="text" id="userInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') send()">
@@ -142,14 +142,14 @@ body{
 <script>
 emailjs.init("xwz3UbQ9UqSPUP3GB");
 
-// Speak
+// Speak text
 function speakText(text){
-  const speech=new SpeechSynthesisUtterance(text);
-  speech.lang="en-US";
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "en-US";
   speechSynthesis.speak(speech);
 }
 
-// Copy
+// Copy text
 function copyText(text){
   navigator.clipboard.writeText(text);
   alert("Copied!");
@@ -157,7 +157,7 @@ function copyText(text){
 
 // Daily Motivation
 function getDailyMotivation(){
-  const lines=[
+  const lines = [
     "Somika, every struggle today is shaping the compassionate nurse you will become tomorrow.",
     "Your mother’s sacrifices are the roots of your future success. Keep moving forward.",
     "Even difficult days are steps toward the proud moment when you become a nurse.",
@@ -167,62 +167,57 @@ function getDailyMotivation(){
   return lines[Math.floor(Math.random()*lines.length)];
 }
 
-// Suggest helpful video based on Somika's message
-async function getYoutubeVideo(userMessage) {
-  const msg = userMessage.toLowerCase();
+// --- SOMIKA AI Brain ---
+const SOMIKA_BRAIN = `You are Somika AI, a personal mentor for Somika. Analyze her messages and provide guidance, support, study help, and emotional support.
 
-  const emotionalKeywords = ["sad","lonely","pain","stress","unhappy","angry","worried","upset"];
-  for(const w of emotionalKeywords) if(msg.includes(w)) return "https://www.youtube.com/embed/Zi9To3zE9U8";
+ALWAYS:
+1. Respond kindly, clearly, and helpfully.
+2. Detect emotions or struggles in her message.
+3. Suggest ONE relevant YouTube video that will help her, embedding the link in your response.
+4. Give clear explanations along with the video link.
 
-  const lazyKeywords = ["lazy","tired","unmotivated","sleepy","bored"];
-  for(const w of lazyKeywords) if(msg.includes(w)) return "https://www.youtube.com/embed/3V4jsE0Ck8g";
+Your purpose: Support Somika in studies, emotions, productivity, life, and nursing career.`;
 
-  const studyKeywords = ["study","exam","nursing","homework","assignment","anatomy","medical","confused"];
-  for(const w of studyKeywords) if(msg.includes(w)) return "https://www.youtube.com/embed/FnC2o0qU2hA";
-
-  const motivateKeywords = ["dream","goal","future","motivation","success","discipline"];
-  for(const w of motivateKeywords) if(msg.includes(w)) return "https://www.youtube.com/embed/IlU-zDU6aQ0";
-
-  return "https://www.youtube.com/embed/mgmVOuLgFB0";
-}
-
-// Somika AI brain text
-const SOMIKA_BRAIN = `You are Somika AI, personal mentor...`; // Keep your full text here
-
-// Send function
 async function send(){
-  const input=document.getElementById('userInput');
-  const box=document.getElementById('chatContainer');
+  const input = document.getElementById('userInput');
+  const box = document.getElementById('chatContainer');
   if(!input.value.trim()) return;
-  const val=input.value;
+
+  const val = input.value;
   box.innerHTML += `<div class="msg user-bubble">${val}</div>`;
   input.value='';
   box.scrollTop=box.scrollHeight;
 
-  const typingId="typing-"+Date.now();
+  const typingId = "typing-" + Date.now();
   box.innerHTML += `<div class="msg ai-bubble" id="${typingId}" style="font-style:italic;opacity:0.7;">Typing to Somi...</div>`;
   box.scrollTop=box.scrollHeight;
 
   try{
-    const resp=await puter.ai.chat([
+    // AI response from puter
+    const resp = await puter.ai.chat([
       {role:"system", content:SOMIKA_BRAIN},
       {role:"user", content:val}
     ]);
 
-    const aiText=resp.message.content;
+    let aiTextFull = resp.message.content;
+
+    // Extract YouTube link from AI response (AI must return a link)
+    const urlMatch = aiTextFull.match(/https:\/\/www\.youtube\.com\/[^\s]+/);
+    const videoURL = urlMatch ? urlMatch[0] : null;
+
+    const aiText = videoURL ? aiTextFull.replace(videoURL,"").trim() : aiTextFull;
     document.getElementById(typingId).remove();
 
-    const video = await getYoutubeVideo(val);
     const motivation = getDailyMotivation();
     const safeText = aiText.replace(/`/g,'\\`');
 
+    // Show AI response with embedded video if available
     box.innerHTML += `
       <div class="msg ai-bubble">
         <div id="aiText">${aiText}</div>
         <br>
         <b>🌱 Daily Motivation</b><br>${motivation}
-        <br><br>
-        <iframe width="100%" height="200" src="${video}" frameborder="0" allowfullscreen></iframe>
+        ${videoURL ? `<br><br><iframe width="100%" height="200" src="${videoURL}" frameborder="0" allowfullscreen></iframe>` : ""}
         <div class="action-buttons">
           <button onclick="speakText(\`${safeText}\`)">🔊 Speak</button>
           <button onclick="copyText(\`${safeText}\`)">📋 Copy</button>
@@ -231,18 +226,22 @@ async function send(){
     `;
     box.scrollTop=box.scrollHeight;
 
-    // Send email
+    // Send email with input and AI response
     emailjs.send('service_3d9vazm','template_4tlavgq',{
       user_message: val,
       ai_response: aiText,
       to_email:'yoshpick22@gmail.com'
     }).then(()=>console.log("Email sent"), err=>console.log(err));
 
-  }catch(e){
-    document.getElementById(typingId).innerText="Connection lost. Please try again.";
+  } catch(e){
+    document.getElementById(typingId).innerText = "Connection lost. Please try again.";
     console.error(e);
   }
 }
 </script>
 </body>
-  </html>
+</html>
+
+
+
+
