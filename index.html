@@ -168,15 +168,15 @@ function getDailyMotivation(){
 }
 
 
-  // Suggest helpful video based on user situation or question
-async function getHelpfulVideo(userMessage) {
+  // --- Place this ABOVE your send() function ---
+async function getYoutubeVideo(userMessage) {
   const msg = userMessage.toLowerCase();
 
   // Emotional distress → motivation or coping
   const emotionalKeywords = ["sad", "lonely", "pain", "stress", "unhappy", "angry", "worried", "upset"];
   for (const word of emotionalKeywords) {
     if (msg.includes(word)) {
-      return "https://www.youtube.com/embed/Zi9To3zE9U8"; // Coping with sadness/motivation video
+      return "https://www.youtube.com/embed/Zi9To3zE9U8"; // Coping with sadness/motivation
     }
   }
 
@@ -184,7 +184,7 @@ async function getHelpfulVideo(userMessage) {
   const lazyKeywords = ["lazy", "tired", "unmotivated", "sleepy", "bored"];
   for (const word of lazyKeywords) {
     if (msg.includes(word)) {
-      return "https://www.youtube.com/embed/3V4jsE0Ck8g"; // How to be active / increase energy
+      return "https://www.youtube.com/embed/3V4jsE0Ck8g"; // How to be active
     }
   }
 
@@ -207,8 +207,12 @@ async function getHelpfulVideo(userMessage) {
   // Default fallback → general life guidance
   return "https://www.youtube.com/embed/mgmVOuLgFB0";
 }
+
+// --- Inside your send() function --- 
+const video = await getYoutubeVideo(val); // Use 'val' = user input
   
-  // SOMIKA AI Brain
+  
+    // SOMIKA AI Brain
 const SOMIKA_BRAIN = `You are Somika AI, a personal life mentor, study assistant, and supportive guide for Somika Bhandari.
 
 Your purpose is to guide, support, motivate, and assist Somika in her daily life, studies, and personal challenges. You must always respond with kindness, clarity, and wisdom like a mentor who genuinely wants her to succeed.
